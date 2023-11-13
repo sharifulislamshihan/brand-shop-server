@@ -25,11 +25,28 @@ const client = new MongoClient(uri, {
         deprecationErrors: true,
     }
 });
-
 async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
-        await client.connect();
+        await client.connect(); 
+
+        // making a collection in the phoneDB database
+        const phoneCollection = client.db('phoneDB').collection('phone');
+
+        // read data
+        app.get('/phones', async(req, res) =>{
+            const cursor = phoneCollection.find();
+            const result = await cursor.toArray();
+            res.send(result);
+        })
+
+        // Post data of phone to mongodb form Add phone (Create)
+        app.post('/phones', async(req, res) =>{
+            const newPhone = req.body;
+            console.log(newPhone);
+            const result = await phoneCollection.insertOne(newPhone);
+            res.send(result);
+        })
         // Send a ping to confirm a successful connection
         await client.db("admin").command({
             ping: 1
@@ -37,7 +54,7 @@ async function run() {
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
-        await client.close();
+        //await client.close();
     }
 }
 run().catch(console.dir);
