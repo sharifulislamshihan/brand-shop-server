@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const {
     MongoClient,
-    ServerApiVersion
+    ServerApiVersion,
+    ObjectId
 } = require('mongodb');
 require('dotenv').config();
 
@@ -39,12 +40,47 @@ async function run() {
             const result = await cursor.toArray();
             res.send(result);
         })
+        // read specific data
+        app.get('/phones/:id', async(req, res) =>{
+            const id = req.params.id;
+            const query = { _id: new  ObjectId(id) }
+            const result = await phoneCollection.findOne(query);
+            res.send(result);
+        })
+
+        // update specific data
+
+        app.put('/phones/:id', async(req, res) =>{
+            const id = req.params.id;
+            const filter = { _id: new ObjectId(id) }
+            const options = { upsert: true };
+            const updatedPhone = req.body;
+            const phone = {
+                $set: {
+                    name: updatedPhone.name,
+                    brandName: updatedPhone.brandName,
+                    price: updatedPhone.price,
+                    type: updatedPhone.type,
+                    details: updatedPhone.details,
+                    photo : updatedPhone.photo
+                }
+            }
+            const result = await phoneCollection.updateOne(filter, phone, options )
+            res.send(result);
+        })
 
         // Post data of phone to mongodb form Add phone (Create)
         app.post('/phones', async(req, res) =>{
             const newPhone = req.body;
             console.log(newPhone);
             const result = await phoneCollection.insertOne(newPhone);
+            res.send(result);
+        })
+        // to delete data 
+        app.delete('/phones/:id', async(req, res) =>{
+            const id = req.params.id;
+            const query = { _id : new ObjectId(id) };
+            const result = await phoneCollection.deleteOne(query);
             res.send(result);
         })
         // Send a ping to confirm a successful connection
