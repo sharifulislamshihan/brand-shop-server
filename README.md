@@ -4,7 +4,7 @@
 
 Available Links
 
--  [Live Link Netlify](https://65549cc056a951006efb46ff--effulgent-crisp-c1ffbb.netlify.app/) 
+-  [Live Link Netlify](https://effulgent-crisp-c1ffbb.netlify.app) 
 - [Client Side Code Link](https://github.com/sharifulislamshihan/brand-shop-client) Click here
 
  # Key features
